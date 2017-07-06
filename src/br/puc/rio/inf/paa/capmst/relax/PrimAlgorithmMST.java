@@ -4,8 +4,9 @@ import br.puc.rio.model.Graph;
 
 public class PrimAlgorithmMST {
 
-	public int MST(Graph graph, int matrizOrigem[][], int matrizResultante[][]) {
-
+	public int MST(Graph graph, int matrizOrigem[][], int matrizResultante[][]) {	
+		
+		return 1;
 	
 
 		
