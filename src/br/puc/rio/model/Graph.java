@@ -1,16 +1,17 @@
-package br.puc.rio.inf.paa.utils;
+package br.puc.rio.model;
 
 public class Graph {
-	
-	int quantityNodes = 0;
-	int matrixAdj[][];
-	
-	
+
+	 public int quantityNodes = 0;
+	 public int matrixAdj[][];
+	 public Aresta listAdj[][];
+
 	public Graph(int quantityNodes) {
-		
+
 		this.matrixAdj = new int[quantityNodes][quantityNodes];
 	}
 
 	
-	
+
+
 }

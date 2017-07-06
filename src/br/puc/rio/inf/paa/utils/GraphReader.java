@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import br.puc.rio.model.Graph;
+
 public class GraphReader {
 
 	public List<Graph> creatAllInstances() {
