@@ -1,17 +1,42 @@
 package br.puc.rio.model;
 
+import java.util.List;
+
 public class Graph {
-
-	 public int quantityNodes = 0;
-	 public int matrixAdj[][];
-	 public Aresta listAdj[][];
-
+	
+	public int quantityNodes = 0;
+	public Double matrixAdj[][];
+	
+	
+	
 	public Graph(int quantityNodes) {
+		
+		this.quantityNodes = quantityNodes;
+		this.matrixAdj = new Double[quantityNodes][quantityNodes];
+	}
 
-		this.matrixAdj = new int[quantityNodes][quantityNodes];
+
+	public void createNodes(List<Double> weights) {
+		// TODO Auto-generated method stub
+		
+		int count = 0;
+		for(int i = 0; i< quantityNodes; i++){
+			
+			for (int j = 0; j < quantityNodes; j++) {
+				
+				if (count < weights.size()) {
+					matrixAdj[i][j] = weights.get(count);
+					System.out.println(weights.get(count));
+					count++;
+				}
+			}
+		}
+		
+		
+
+		
 	}
 
 	
-
-
+	
 }
