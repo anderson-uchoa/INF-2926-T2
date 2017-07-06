@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -19,7 +20,7 @@ public class GraphReader {
 		List<Graph> graphInstances = new ArrayList<Graph>();
 
 		for (String fileName : fileNames) {
-
+			
 			Graph instance = createInstance(fileName);
 			graphInstances.add(instance);
 		}
@@ -29,26 +30,43 @@ public class GraphReader {
 
 	private Graph createInstance(String fileName) {
 		// TODO Auto-generated method stub
-//		Path path = Paths.get(fileName);
-//		
-//		List<String> lines;
-//		
-//		try {
-//			lines = Files.readAllLines(path);
-//		 //   Graph graph = 
-//			for (int j = 1; j < lines.size(); j++) {
-//
-//				String wordsItems[] = lines.get(j).trim().split("\\s+");
-//
-//				
-//			}
-//			
-//		}catch(IOException e){
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-		return null;
+		Path path = Paths.get(fileName);
+		
+		List<String> lines;
+		
+		Graph graph = null;
+		
+		try {
+			lines = Files.readAllLines(path);
+			
+			int quantityNodes = 0;
+			List<Double> weights = new LinkedList<>();
+		    
+		    //Get size graph from first line
+		    String words[] = lines.get(0).trim().split("\\s+");
+		    quantityNodes = Integer.parseInt(words[0]);
+		    graph = new Graph(quantityNodes);
+		    
+		    //Get weigths from others lines 
+			for (int i = 1; i < lines.size(); i++) {
+
+				String wordsLines[] = lines.get(i).trim().split("\\s+");
+				
+			    for(int j = 0; j < wordsLines.length; j ++){      
+				   Double number = Double.parseDouble(wordsLines[j]);
+				 
+				   weights.add(number);
+				   
+			    }
+			}
+			graph.createNodes(weights);
+		
+		}catch(IOException e){
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return graph;
 
 	}
 
@@ -70,5 +88,6 @@ public class GraphReader {
 		return fileNames;
 
 	}
+
 
 }
