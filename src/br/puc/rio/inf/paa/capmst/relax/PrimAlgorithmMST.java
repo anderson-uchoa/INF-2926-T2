@@ -6,8 +6,10 @@ import br.puc.rio.model.Graph;
 
 public class PrimAlgorithmMST {
 
-	public static Integer[][] prim(Integer[][] matrizSistema) {
+	public static Integer[][] prim(Graph graph) {
 
+		Integer matrizSistema[][] = graph.matrixAdj;
+		
 		/**
 		 * Guardar os vértices já verificados pelo Algoritmo de
 		 * Prim
@@ -50,7 +52,6 @@ public class PrimAlgorithmMST {
 				
 				/**Incializando matriz resposta */
 				matrizResposta[contadorPontosAvaliados][contadorVizinhos] = 0;
-				
 				
 				
 				/**
@@ -143,6 +144,18 @@ public class PrimAlgorithmMST {
 		return matrizResposta;
 	}
 
-	
-	
+	public static int somaMST(Integer[][] matrizResultado) {
+
+		int i, j;
+		int soma = 0;
+		for (i = 0; i < matrizResultado.length; i++) {
+			for (j = 0; j < matrizResultado.length; j++) {
+				if (matrizResultado[i][j] == matrizResultado[j][i]) {
+					soma = soma + matrizResultado[i][j];
+				}
+			}
+		}
+		return soma/2;
+	}
 }
+	
