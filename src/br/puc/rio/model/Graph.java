@@ -5,18 +5,18 @@ import java.util.List;
 public class Graph {
 	
 	public int quantityNodes = 0;
-	public Double matrixAdj[][];
+	public Integer matrixAdj[][];
 	
 	
 	
 	public Graph(int quantityNodes) {
 		
 		this.quantityNodes = quantityNodes;
-		this.matrixAdj = new Double[quantityNodes][quantityNodes];
+		this.matrixAdj = new Integer[quantityNodes][quantityNodes];
 	}
 
 
-	public void createNodes(List<Double> weights) {
+	public void createNodes(List<Integer> weights) {
 		// TODO Auto-generated method stub
 		
 		int count = 0;
@@ -26,14 +26,10 @@ public class Graph {
 				
 				if (count < weights.size()) {
 					matrixAdj[i][j] = weights.get(count);
-					System.out.println(weights.get(count));
 					count++;
 				}
 			}
 		}
-		
-		
-
 		
 	}
 

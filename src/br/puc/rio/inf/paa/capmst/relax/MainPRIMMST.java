@@ -10,14 +10,14 @@ public class MainPRIMMST {
 		 * 
 		 * Você poderá substituir por qualquer matriz quadrada não negativa
 		 */
-		Double[][] matrizSistema = { { 0.0, 5.0, 30.0, 0.0, 0.0, 0.0 }, { 5.0, 0.0, 20.0, 10.0, 0.0, 0.0 },
-				{ 30.0, 20.0, 0.0, 10.0, 15.0, 0.0 }, { 0.0, 10.0, 10.0, 0.0, 5.0, 20.0 },
-				{ 0.0, 0.0, 15.0, 5.0, 0.0, 15.0 }, { 0.0, 0.0, 0.0, 20.0, 15.0, 0.0 } };
+		Integer[][] matrizSistema = { { 0, 5, 30, 0, 0, 0 }, { 5, 0, 20, 10, 0, 0 },
+				{ 30, 20, 0, 10, 15, 0 }, { 0, 10, 10, 0, 5, 20 },
+				{ 0, 0, 15, 5, 0, 15 }, { 0, 0, 0, 20, 15, 0 } };
 
 		/**
 		 * Chamada do Algoritmo de Prim
 		 */
-		Double[][] matrizResultado = PrimAlgorithmMST.prim(matrizSistema);
+		Integer[][] matrizResultado = PrimAlgorithmMST.prim(matrizSistema);
 
 		/**
 		 * Impressão da matrizResultado com a resposta do Algoritmo de Prim

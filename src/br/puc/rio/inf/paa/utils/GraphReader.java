@@ -40,7 +40,7 @@ public class GraphReader {
 			lines = Files.readAllLines(path);
 			
 			int quantityNodes = 0;
-			List<Double> weights = new LinkedList<>();
+			List<Integer> weights = new LinkedList<>();
 		    
 		    //Get size graph from first line
 		    String words[] = lines.get(0).trim().split("\\s+");
@@ -53,8 +53,8 @@ public class GraphReader {
 				String wordsLines[] = lines.get(i).trim().split("\\s+");
 				
 			    for(int j = 0; j < wordsLines.length; j ++){      
-				   Double number = Double.parseDouble(wordsLines[j]);
-				 
+				   Integer number = Integer.parseInt(wordsLines[j]);
+				 				   
 				   weights.add(number);
 				   
 			    }
