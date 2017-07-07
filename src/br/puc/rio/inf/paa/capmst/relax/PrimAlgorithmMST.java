@@ -9,19 +9,19 @@ public class PrimAlgorithmMST {
 	public static Integer[][] prim(Integer[][] matrizSistema) {
 
 		/**
-		 * ArrayList para guardar os vértices já verificados pelo Algoritmo de
+		 * Guardar os vértices já verificados pelo Algoritmo de
 		 * Prim
 		 */
 		ArrayList<Boolean> verticesVerificados = new ArrayList<Boolean>();
 
 		/**
-		 * ArrayList para guardar as distâncias relativas para cada vértice em
+		 * Guardar as distâncias relativas para cada vértice em
 		 * cada iteração do Algoritmo de Prim
 		 */
 		ArrayList<Integer> distanciaRelativa = new ArrayList<Integer>();
 
 		/**
-		 * ArrayList unidimensional que guarda os nós vizinhos de cada nó do
+		 * Guarda os nós vizinhos de cada nó do
 		 * grafo da árvore final produzida pelo Algoritmo de Prim
 		 */
 		ArrayList<Integer> nosVizinhos = new ArrayList<Integer>();
@@ -40,13 +40,10 @@ public class PrimAlgorithmMST {
 		distanciaRelativa.set(0, new Integer(0));
 
 		/**
-		 * Definição do ponto que será a raiz da árvore resultante
+		 * A raiz da árvore resultante
 		 */
 		Integer pontoAvaliado = new Integer(0);
 
-		/**
-		 * Estrutura para execução das iterações do Algoritmo de Prim
-		 */
 		for (Integer contadorPontosAvaliados = 0; contadorPontosAvaliados < matrizSistema[0].length; contadorPontosAvaliados++) {
 			for (Integer contadorVizinhos = 0; contadorVizinhos < matrizSistema[0].length; contadorVizinhos++) {
 
