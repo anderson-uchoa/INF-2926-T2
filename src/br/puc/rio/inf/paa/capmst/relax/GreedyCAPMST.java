@@ -30,6 +30,9 @@ public class GreedyCAPMST {
 	    int indexMinimum = -1;
 	    int minimumDistance = Integer.MAX_VALUE;
 	    treeSet.add(root);
+	    
+		List<Integer> subTree = new ArrayList<>();
+		
 	    for (int i = 0; i < n; i++) {
 			if (root != i 
 					&& graph.matrixAdj[root][i] != 0 
@@ -43,7 +46,9 @@ public class GreedyCAPMST {
 			}
 			
 			if(i + 1 == n && treeSet.size() !=  n - 1){
-				List<Integer> subTree = new ArrayList<>();
+		       if(subTree.size() != 0 && indexMinimum != subTree.get(0)){
+		    	   subTree = new ArrayList<>();
+		       }	
 				subTree.add(indexMinimum);
 				treeSet.add(indexMinimum);
 				matrixResult[root][indexMinimum] = graph.matrixAdj[root][indexMinimum];
