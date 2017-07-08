@@ -4,14 +4,18 @@ public class Aresta {
 
 	public int origem;
 	public int destino;
-	public int peso;
-	public boolean visitado;
+	
 
-	public Aresta(int origem, int destino, int peso) {
+	public Aresta(int origem, int destino) {
 		this.origem = origem;
 		this.destino = destino;
-		this.peso = peso;
-		this.visitado = false;
+		}
+
+
+	@Override
+	public String toString() {
+		return "Aresta [origem=" + origem + ", destino=" + destino + "]";
 	}
 
+	
 }

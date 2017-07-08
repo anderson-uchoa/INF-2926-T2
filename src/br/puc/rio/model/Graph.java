@@ -17,7 +17,6 @@ public class Graph {
 
 
 	public void createNodes(List<Integer> weights) {
-		// TODO Auto-generated method stub
 		
 		int count = 0;
 		for(int i = 0; i< quantityNodes; i++){
