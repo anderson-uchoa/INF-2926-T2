@@ -36,17 +36,18 @@ public class MainPRIMMST {
 		
 		Aresta aresta = new Aresta(0, 1);
 
-		Aresta aresta2 = new Aresta(1, 3);
+		Aresta aresta2 = new Aresta(1, 2);
+		Aresta aresta3 = new Aresta(2, 4);
 		
 		
 		
 		List<Aresta> arestasRemovidas = new ArrayList<Aresta>();
-		//arestasRemovidas.add(aresta);
-		arestasRemovidas.add(aresta2);
+		arestasRemovidas.add(aresta);
+		//arestasRemovidas.add(aresta2);
 
 		List<Aresta> arestasAdicionadas = new ArrayList<Aresta>();
 		
-		//arestasAdicionadas.add(aresta);
+		arestasAdicionadas.add(aresta3);
 		//arestasAdicionadas.add(aresta2);
 		
 		
