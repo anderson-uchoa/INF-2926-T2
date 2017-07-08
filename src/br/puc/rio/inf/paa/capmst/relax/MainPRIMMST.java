@@ -1,6 +1,15 @@
 package br.puc.rio.inf.paa.capmst.relax;
 
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import br.puc.rio.model.Aresta;
+import br.puc.rio.model.Graph;
+
 public class MainPRIMMST {
+
 	
 	public static void main(String[] args) {
 
@@ -14,11 +23,43 @@ public class MainPRIMMST {
 				{ 30, 20, 0, 10, 15, 0 }, { 0, 10, 10, 0, 5, 20 },
 				{ 0, 0, 15, 5, 0, 15 }, { 0, 0, 0, 20, 15, 0 } };
 
+		
+		
+		
+		Graph graph = new Graph(6);
+		graph.matrixAdj = matrizSistema;
+		
 		/**
 		 * Chamada do Algoritmo de Prim
 		 */
-		Integer[][] matrizResultado = PrimAlgorithmMST.prim(matrizSistema);
+		
+		
+		Aresta aresta = new Aresta(0, 1);
 
+		Aresta aresta2 = new Aresta(1, 3);
+		
+		
+		
+		List<Aresta> arestasRemovidas = new ArrayList<Aresta>();
+		//arestasRemovidas.add(aresta);
+		arestasRemovidas.add(aresta2);
+
+		List<Aresta> arestasAdicionadas = new ArrayList<Aresta>();
+		
+		//arestasAdicionadas.add(aresta);
+		//arestasAdicionadas.add(aresta2);
+		
+		
+		Integer[][] matrizResultado = PrimAlgorithmMST.prim(graph, arestasRemovidas, arestasAdicionadas);
+
+		
+		int soma = PrimAlgorithmMST.somaMST(matrizResultado);
+		
+		System.out.println("Soma MST= "+ soma);
+		
+		System.out.println();
+		
+		
 		/**
 		 * Impressão da matrizResultado com a resposta do Algoritmo de Prim
 		 */
@@ -33,4 +74,7 @@ public class MainPRIMMST {
 
 	}
 
+
+
+	
 }
