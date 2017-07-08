@@ -33,6 +33,14 @@ public class Graph {
 		
 	}
 
+
+	public void setMatrixAdj(Integer[][] matrixAdj) {
+		this.matrixAdj = matrixAdj;
+	}
+	
+	
+	
+
 	
 	
 }
