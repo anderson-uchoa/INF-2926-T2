@@ -1,31 +1,127 @@
 package br.puc.rio.inf.paa.capmst.relax;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import br.puc.rio.model.Aresta;
 import br.puc.rio.model.Graph;
 
 public class PrimAlgorithmMST {
 
-	public static Integer[][] prim(Integer[][] matrizSistema) {
+	public static Integer[][] prim(Graph graph, List<Aresta> arestasRemovidas, List<Aresta> arestasAdicionadas) {
+
+		Integer matrizSistema[][] = graph.matrixAdj;
+		for (int contadorHorizontal = 0; contadorHorizontal < matrizSistema[0].length; contadorHorizontal++) {
+			for (int contadorVertical = 0; contadorVertical < matrizSistema[0].length; contadorVertical++) {
+
+				System.out.print(matrizSistema[contadorHorizontal][contadorVertical] + " ");
+			}
+
+			System.out.println();
+		}
+
+		removeAresta(matrizSistema, arestasRemovidas);
+
+		ArrayList<Boolean> verticesVerificados = new ArrayList<Boolean>();
+
+		ArrayList<Integer> distanciaRelativa = new ArrayList<Integer>();
+
+		ArrayList<Integer> nosVizinhos = new ArrayList<Integer>();
+
+		Integer[][] matrizResposta = new Integer[matrizSistema[0].length][matrizSistema[0].length];
+
+		for (Integer contador = 0; contador < matrizSistema[0].length; contador++) {
+			verticesVerificados.add(false);
+			nosVizinhos.add(0);
+			distanciaRelativa.add(Integer.MAX_VALUE);
+		}
+
+		distanciaRelativa.set(0, new Integer(0));
+
+		Integer pontoAvaliado = new Integer(0);
+
+		for (Integer contadorPontosAvaliados = 0; contadorPontosAvaliados < matrizSistema[0].length; contadorPontosAvaliados++) {
+			for (Integer contadorVizinhos = 0; contadorVizinhos < matrizSistema[0].length; contadorVizinhos++) {
+
+				matrizResposta[contadorPontosAvaliados][contadorVizinhos] = 0;
+
+				if ((verticesVerificados.get(contadorVizinhos)) || (contadorVizinhos == pontoAvaliado)) {
+					continue;
+				}
+
+				for (int j = 0; j < arestasAdicionadas.size(); j++) {
+					if (matrizSistema[contadorPontosAvaliados][contadorVizinhos] == matrizSistema[arestasAdicionadas
+							.get(j).origem][arestasAdicionadas.get(j).destino]) {
+						
+						nosVizinhos.set(contadorVizinhos, contadorPontosAvaliados);
+						//System.out.println("contadorVizinhos: "  + contadorVizinhos.intValue() + ""+ "contadorPontosAvaliados: " + contadorPontosAvaliados.intValue());
+					}
+				}
+
+				if ((matrizSistema[pontoAvaliado][contadorVizinhos] > 0)
+						&& ((matrizSistema[pontoAvaliado][contadorVizinhos] < distanciaRelativa
+								.get(contadorVizinhos)))) {
+
+					distanciaRelativa.set(contadorVizinhos, matrizSistema[pontoAvaliado][contadorVizinhos]);
+
+					System.out.println("contadorVizinhos: "  + contadorVizinhos.intValue() + ""+ "pontoAvaliado: " + pontoAvaliado.intValue());
+					
+					
+					nosVizinhos.set(contadorVizinhos, pontoAvaliado);
+
+				}
+			}
+
+			verticesVerificados.set(pontoAvaliado, true);
+
+			pontoAvaliado = new Integer(0);
+			Integer distanciaComparada = new Integer(Integer.MAX_VALUE);
+
+			for (Integer contador = 1; contador < verticesVerificados.size(); contador++) {
+
+				if (verticesVerificados.get(contador)) {
+					continue;
+				}
+				if (distanciaRelativa.get(contador) < distanciaComparada) {
+					distanciaComparada = distanciaRelativa.get(contador);
+					pontoAvaliado = contador;
+				}
+
+			}
+
+		}
+
+		for (int contador = 1; contador < nosVizinhos.size(); contador++) {
+
+			matrizResposta[contador][nosVizinhos.get(contador)] = matrizSistema[contador][nosVizinhos.get(contador)];
+			matrizResposta[nosVizinhos.get(contador)][contador] = matrizResposta[contador][nosVizinhos.get(contador)];
+
+		}
+
+		return matrizResposta;
+	}
+
+	public static Integer[][] prim(Graph graph) {
+
+		Integer matrizSistema[][] = graph.matrixAdj;
 
 		/**
-		 * Guardar os vértices já verificados pelo Algoritmo de
-		 * Prim
+		 * Guardar os vértices já verificados pelo Algoritmo de Prim
 		 */
 		ArrayList<Boolean> verticesVerificados = new ArrayList<Boolean>();
 
 		/**
-		 * Guardar as distâncias relativas para cada vértice em
-		 * cada iteração do Algoritmo de Prim
+		 * Guardar as distâncias relativas para cada vértice em cada iteração do
+		 * Algoritmo de Prim
 		 */
 		ArrayList<Integer> distanciaRelativa = new ArrayList<Integer>();
 
 		/**
-		 * Guarda os nós vizinhos de cada nó do
-		 * grafo da árvore final produzida pelo Algoritmo de Prim
+		 * Guarda os nós vizinhos de cada nó do grafo da árvore final produzida
+		 * pelo Algoritmo de Prim
 		 */
 		ArrayList<Integer> nosVizinhos = new ArrayList<Integer>();
-		
+
 		Integer[][] matrizResposta = new Integer[matrizSistema[0].length][matrizSistema[0].length];
 
 		/**
@@ -47,12 +143,9 @@ public class PrimAlgorithmMST {
 		for (Integer contadorPontosAvaliados = 0; contadorPontosAvaliados < matrizSistema[0].length; contadorPontosAvaliados++) {
 			for (Integer contadorVizinhos = 0; contadorVizinhos < matrizSistema[0].length; contadorVizinhos++) {
 
-				
-				/**Incializando matriz resposta */
+				/** Incializando matriz resposta */
 				matrizResposta[contadorPontosAvaliados][contadorVizinhos] = 0;
-				
-				
-				
+
 				/**
 				 * Verifica se o nó a ser avaliado nesta iteração já foi
 				 * avaliado anteriormente; se sim, passa para a próxima iteração
@@ -103,9 +196,9 @@ public class PrimAlgorithmMST {
 			 */
 			for (Integer contador = 1; contador < verticesVerificados.size(); contador++) {
 
-				/**1
-				 * S1e o vertice a ser verificado já foi verificado anteriormente
-				 * (true) passa à próxima iteração.
+				/**
+				 * 1 S1e o vertice a ser verificado já foi verificado
+				 * anteriormente (true) passa à próxima iteração.
 				 */
 				if (verticesVerificados.get(contador)) {
 					continue;
@@ -127,22 +220,47 @@ public class PrimAlgorithmMST {
 
 		}
 
-	
-
 		/**
 		 * Criação da matrizResposta com a árvore resultante do Algoritmo de
 		 * Prim
 		 */
 		for (int contador = 1; contador < nosVizinhos.size(); contador++) {
-			
+
 			matrizResposta[contador][nosVizinhos.get(contador)] = matrizSistema[contador][nosVizinhos.get(contador)];
 			matrizResposta[nosVizinhos.get(contador)][contador] = matrizResposta[contador][nosVizinhos.get(contador)];
-			
+
 		}
-	
+
 		return matrizResposta;
 	}
 
-	
-	
+	public static void removeAresta(Integer matrizSistema[][], List<Aresta> arestasRemovidas) {
+
+		for (int i = 0; i < arestasRemovidas.size(); i++) {
+
+			for (int contHori = 0; contHori < matrizSistema.length; contHori++) {
+				for (int contVer = 0; contVer < matrizSistema.length; contVer++) {
+					if (matrizSistema[contHori][contVer] == matrizSistema[arestasRemovidas
+							.get(i).origem][arestasRemovidas.get(i).destino]) {
+						matrizSistema[contHori][contVer] = 0;
+						matrizSistema[contVer][contHori] = 0;
+					}
+				}
+			}
+		}
+	}
+
+	public static int somaMST(Integer[][] matrizResultado) {
+
+		int i, j;
+		int soma = 0;
+		for (i = 0; i < matrizResultado.length; i++) {
+			for (j = 0; j < matrizResultado.length; j++) {
+				if (matrizResultado[i][j] != 0) {
+					soma = soma + matrizResultado[i][j];
+				}
+			}
+		}
+		return soma / 2;
+	}
 }
