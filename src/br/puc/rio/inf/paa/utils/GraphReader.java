@@ -51,12 +51,11 @@ public class GraphReader {
 			for (int i = 1; i < lines.size(); i++) {
 
 				String wordsLines[] = lines.get(i).trim().split("\\s+");
-				
+
 			    for(int j = 0; j < wordsLines.length; j ++){      
 				   Integer number = Integer.parseInt(wordsLines[j]);
 				 				   
-				   weights.add(number);
-				   
+				   weights.add(weights.size(), number);
 			    }
 			}
 			graph.createNodes(weights);
