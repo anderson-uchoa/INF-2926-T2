@@ -15,11 +15,18 @@ public class GreedyCMST {
 	int n;
 	int cont = 0;
 	Set<Integer> treeSet;
+	int sumEdgesCMST;
 	
 	public GreedyCMST(Graph graph){
 		this.graph = graph;
 		this.n = graph.quantityNodes;
 		this.treeSet =  new TreeSet<Integer>();
+	}
+	
+	public static int buildCMST(Graph graph, int capacity){
+		GreedyCMST greedyCMST = new GreedyCMST(graph);
+		greedyCMST.buildCMST(1, capacity);
+		return greedyCMST.sumEdgesCMST;
 	}
 	
 	public Integer[][] buildCMST(int root, int capacity){
@@ -56,14 +63,21 @@ public class GreedyCMST {
 
 	private void calculateDistance(int root) {
 		// TODO Auto-generated method stub
+		
+		Integer[] edges = new Integer[n];
 		for(int i = 1; i< n; i++){
 			
 			if(root != i){
+				edges[i] = edges[i] == null ? matrixResult[root][i] : edges[i];
+				
 				for(int j = 1; j<n ; j++){
 					
 					if(i != j && matrixResult[i][j] != Integer.MAX_VALUE ){
-						if(matrixResult[root][i] + matrixResult[i][j] < matrixResult[root][j]){
+						
+						if(matrixResult[root][i] + matrixResult[i][j] <= matrixResult[root][j]){
+						
 							matrixResult[root][j] = matrixResult[root][i] + matrixResult[i][j];
+							edges[j] = matrixResult[i][j]; 
 						}
 						
 					}
@@ -71,6 +85,13 @@ public class GreedyCMST {
 			}
 		
 		}
+		sumEdgesCMST = 0;
+		for(int i = 0; i< n; i++){
+			if(edges[i] != null){
+				sumEdgesCMST = sumEdgesCMST + edges[i];
+			}
+		}
+	
 	}
 
 	public List<Integer> buildSubTree(int root, int capacity, List<Integer> subTree, int currentNode, int destin, int distanceFromRoot){
@@ -146,40 +167,29 @@ public class GreedyCMST {
 		return matrix;
 	}
 	
-	
+
 	
 	
 	public static void main(String[] args){
-//		teste2();
+		//teste1();
 		GraphReader reader = new GraphReader();
 		
 		List<Graph> graphs = reader.creatAllInstances();
 		
-		graphs.forEach( graph -> {
-			
-			System.out.println("Size Graph: " + graph.matrixAdj.length);
-			GreedyCMST greedyCAPMST = new GreedyCMST(graph);
-			
-			Integer[][] agp = greedyCAPMST.buildCMST(1, 3);
-			
-			System.out.println("Size AGP : "+ agp.length);
-		});
-		 
-		
-	
+		for (int i = 0; i < graphs.size(); i++) {
+				System.out.println("Size Graph: " + graphs.get(i).matrixAdj.length);
+				
+				
+				
+				System.out.println("Sum Weights CMST : "+ buildCMST(graphs.get(i), 3));
+				
+				
+		}
+
 	}
 	
 	
 	public static void teste1(){
-		Set<Integer> setInt = new TreeSet<>();
-		
-		
-		setInt.add(0);
-		setInt.add(1);
-		
-		if(setInt.contains(new Integer(0))){
-			System.out.println("tem --");
-		}
 		
 		Integer[][] matrixTest = initMatrixResult(6);
 		matrixTest[1][2] = 10;
