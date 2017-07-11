@@ -17,29 +17,31 @@ public class Graph {
 
 
 	public void createNodes(List<Integer> weights) {
-		
 		int count = 0;
-		for(int i = 0; i< quantityNodes; i++){
-			
-			for (int j = 0; j < quantityNodes; j++) {
-				
+		for(int i = 0; i< this.quantityNodes; i++){
+			for (int j = 0; j < this.quantityNodes; j++) {
 				if (count < weights.size()) {
-					matrixAdj[i][j] = weights.get(count);
+					this.matrixAdj[i][j] = weights.get(count);
 					count++;
 				}
 			}
 		}
-		
 	}
-
 
 	public void setMatrixAdj(Integer[][] matrixAdj) {
 		this.matrixAdj = matrixAdj;
 	}
 	
+	public void print(){
+		for(int i = 0; i < this.quantityNodes; i++){
+			String row = "";
+			for (int j = 0; j < this.quantityNodes; j++) {
+				row+=this.matrixAdj[i][j]+"\t";
+			}
+			System.out.println(row);
+		}
+	}
 	
-	
-
 	
 	
 }
