@@ -44,19 +44,18 @@ public class GraphReader {
 		    
 		    //Get size graph from first line
 		    String words[] = lines.get(0).trim().split("\\s+");
-		    quantityNodes = Integer.parseInt(words[0]);
+		    quantityNodes = Integer.parseInt(words[0])+1;
 		    graph = new Graph(quantityNodes);
 		    
 		    //Get weigths from others lines 
 			for (int i = 1; i < lines.size(); i++) {
 
 				String wordsLines[] = lines.get(i).trim().split("\\s+");
-				
+
 			    for(int j = 0; j < wordsLines.length; j ++){      
 				   Integer number = Integer.parseInt(wordsLines[j]);
 				 				   
-				   weights.add(number);
-				   
+				   weights.add(weights.size(), number);
 			    }
 			}
 			graph.createNodes(weights);
