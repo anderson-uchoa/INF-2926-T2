@@ -44,7 +44,7 @@ public class GraphReader {
 		    
 		    //Get size graph from first line
 		    String words[] = lines.get(0).trim().split("\\s+");
-		    quantityNodes = Integer.parseInt(words[0]);
+		    quantityNodes = Integer.parseInt(words[0])+1;
 		    graph = new Graph(quantityNodes);
 		    
 		    //Get weigths from others lines 
