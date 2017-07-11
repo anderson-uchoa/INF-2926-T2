@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
+import br.puc.rio.inf.paa.capmst.kruskal.KruskalMST;
+import br.puc.rio.inf.paa.utils.DisjointSets;
 import br.puc.rio.model.Edge;
 import br.puc.rio.model.Graph;
 
@@ -41,12 +43,25 @@ public class DFSCAPMST {
 //				Testar se essa solução é a melhor solução encontrada, se sim, atualizar a melhor solução
 			
 //				Caso na seja a melhor solução, não gerar
-			if(node.getLevel() < 40){
-				stack.push(this.partitionLeft(node));
-				stack.push(this.partitionRight(node));
-			}
+//			if(node.getLevel() < 40){
+//				stack.push(this.partitionLeft(node));
+//				stack.push(this.partitionRight(node));
+//			}
 			
 		}
+		
+		List<Edge> edgesIn = new ArrayList<Edge>();
+		List<Edge> edgesOut = new ArrayList<Edge>();
+		
+		edgesIn.add(new Edge(1,0,10));
+		edgesIn.add(new Edge(3,0,8));
+		edgesIn.add(new Edge(3,1,8));
+		edgesOut.add(new Edge(2,0,5));
+		edgesOut.add(new Edge(2,1,5));
+		edgesOut.add(new Edge(3,2,5));
+		
+		System.out.println(this.hasCycle(edgesIn));
+		System.out.println(this.hasIsolatedVertex(edgesOut));
 		
 	}
 	
@@ -75,6 +90,38 @@ public class DFSCAPMST {
 		rightChild.setEdgesOut(node.getEdgesOut());
 		rightChild.addEdgeIn(this.edges.get(node.getLevel()));
 		return rightChild;
+	}
+	
+	private boolean hasCycle(List<Edge> edgesIn){
+		DisjointSets set = new DisjointSets(this.graph.quantityNodes);
+		
+		for(Edge edge:edgesIn){
+			if(set.find(edge.origem) != set.find(edge.destino)){
+				set.union(set.find(edge.origem), set.find(edge.destino));
+			}else{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean hasIsolatedVertex(List<Edge> edgesOut){
+		
+		int[] counts = new int[this.graph.quantityNodes];
+		
+		for(Edge edge:edgesOut){
+			counts[edge.destino]++;
+			counts[edge.origem]++;
+		}
+		
+		for(int i:counts){
+			if(i == this.graph.quantityNodes-1){
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 }

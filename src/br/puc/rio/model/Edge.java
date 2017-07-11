@@ -20,5 +20,15 @@ public class Edge implements Comparable<Edge>{
 		else if(this.peso < o.peso) return -1;
 		return 0;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this.destino == ((Edge) obj).destino &&
+				this.origem == ((Edge) obj).origem &&
+				this.peso == ((Edge) obj).peso){
+			return true;
+		}
+		return false;
+	}
 
 }
