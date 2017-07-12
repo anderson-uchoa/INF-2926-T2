@@ -55,7 +55,7 @@ public class Main {
 		for(Graph graph:graphs){
 			if(graph.quantityNodes < 20){
 //				graph.print();
-				DFSCAPMST dfscapmst = new DFSCAPMST(graph, 10);
+				DFSCAPMST dfscapmst = new DFSCAPMST(graph, 3);
 			}
 		}
 //		
