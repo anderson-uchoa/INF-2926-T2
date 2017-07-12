@@ -35,7 +35,7 @@ public class DFSCAPMST {
 		this.root = new NodeCAPMST(0);
 		
 		Stack<NodeCAPMST> stack = new Stack<NodeCAPMST>();
-		System.out.println(stack.size());
+		
 		stack.push(root);
 		
 		while(!stack.isEmpty()){
