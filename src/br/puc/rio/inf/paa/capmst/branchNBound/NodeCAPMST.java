@@ -31,7 +31,9 @@ public class NodeCAPMST {
 	}
 
 	public void setEdgesIn(List<Edge> edgesIn) {
-		this.edgesIn = edgesIn;
+		for(Edge edge:edgesIn){
+			this.edgesIn.add(edge);
+		}
 	}
 
 	public List<Edge> getEdgesOut() {
@@ -39,7 +41,9 @@ public class NodeCAPMST {
 	}
 
 	public void setEdgesOut(List<Edge> edgesOut) {
-		this.edgesOut = edgesOut;
+		for(Edge edge:edgesOut){
+			this.edgesOut.add(edge);
+		}
 	}
 
 	public int getLowerBound() {
