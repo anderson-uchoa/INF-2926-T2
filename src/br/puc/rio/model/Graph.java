@@ -12,13 +12,13 @@ public class Graph {
 	public Graph(int quantityNodes) {
 		
 		this.quantityNodes = quantityNodes;
-		this.matrixAdj = new Integer[quantityNodes][quantityNodes];
+		this.matrixAdj = new Integer[quantityNodes+1][quantityNodes+1];
 	}
 
 
 	public void createNodes(List<Integer> weights) {
 		int count = 0;
-		for(int i = 0; i< this.quantityNodes; i++){
+		for(int i = 0; i < this.quantityNodes; i++){
 			for (int j = 0; j < this.quantityNodes; j++) {
 				if (count < weights.size()) {
 					this.matrixAdj[i][j] = weights.get(count);

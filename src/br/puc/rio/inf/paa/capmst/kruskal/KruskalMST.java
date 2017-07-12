@@ -39,7 +39,7 @@ public class KruskalMST {
 		for(Edge edge:edges){
 			if(set.find(edge.origem) != set.find(edge.destino)){
 				edgesMST.add(edge);
-				System.out.println("Aresta: "+edge.origem+" -> "+edge.destino);
+//				System.out.println(edge.origem+" -> "+edge.destino);
 				set.union(set.find(edge.origem), set.find(edge.destino));
 			}
 		}
