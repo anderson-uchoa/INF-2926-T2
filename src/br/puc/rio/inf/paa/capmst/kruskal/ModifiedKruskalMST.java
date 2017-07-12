@@ -16,7 +16,6 @@ public class ModifiedKruskalMST {
 
 		int minimumEdgesRoot = ModifiedKruskalMST.getMinimumEdgesFromRoot(graph, capacity);
 		int qtyEdgesInRoot = ModifiedKruskalMST.edgesRoot(graph, edgesIn);
-		int qtyEdgesOutRoot = ModifiedKruskalMST.edgesRoot(graph, edgesOut);
 
 		List<Edge> edgesRoot = ModifiedKruskalMST.getEdgesRoot(graph, edges);
 
