@@ -6,19 +6,22 @@ import java.util.List;
 import java.util.Stack;
 
 import br.puc.rio.inf.paa.capmst.kruskal.KruskalMST;
+import br.puc.rio.inf.paa.capmst.kruskal.ModifiedKruskalMST;
+import br.puc.rio.inf.paa.capmst.relax.GreedyCMST;
 import br.puc.rio.inf.paa.utils.DisjointSets;
 import br.puc.rio.model.Edge;
 import br.puc.rio.model.Graph;
 
 public class DFSCAPMST {
-	
+
 	private NodeCAPMST root;
 	private Graph graph;
 	private List<Edge> edges;
 	private int capacity;
 	private int bestSolution;
 	private List<Edge> edgeSolution;
-	
+	private int initialLowerBound;
+
 	public DFSCAPMST(Graph graph, int capacity){
 		System.out.println("QUANTIDADE: "+graph.quantityNodes);
 		this.setBestSolution(Integer.MAX_VALUE);
@@ -27,63 +30,57 @@ public class DFSCAPMST {
 		this.edges = new ArrayList<Edge>();
 		this.getEdgesFromGraph();
 		Collections.sort(this.edges);
-		
+		this.search();
 	}
-	
+
 	public void search(){
-		
-		this.root = new NodeCAPMST(0);
-		
 		Stack<NodeCAPMST> stack = new Stack<NodeCAPMST>();
-		
+
+		this.bestSolution = GreedyCMST.buildCMST(this.graph, this.graph.quantityNodes-1, this.capacity);
+		System.out.println(bestSolution);
+
+		this.root = new NodeCAPMST(0);
+
+		this.root.setLowerBound(this.value(ModifiedKruskalMST.run(graph, root.getEdgesIn(), root.getEdgesOut(), this.capacity)));
+
 		stack.push(root);
-		
+
 		while(!stack.isEmpty()){
-		
 			NodeCAPMST node = stack.pop();
-			
-		//System.out.println("Edges IN: ");
-//			for(Edge edge:node.getEdgesIn()){
-//				System.out.println("Edge IN: "+edge.origem+" -> "+edge.destino);
-//			}
-//			System.out.println("Edges OUT: ");
-//			for(Edge edge:node.getEdgesOut()){
-//				System.out.println("Edge OUT: "+edge.origem+" -> "+edge.destino);
-//			}
-			
-			List<Edge> solution = KruskalMST.run(graph, node.getEdgesIn(), node.getEdgesOut());
-			int lowerBound = this.value(solution);
-			
-//			System.out.println("lowerBound: "+lowerBound);
-//			System.out.println("Ciclo: "+this.hasCycle(node.getEdgesIn()));
-//			System.out.println("Isolado: "+this.hasIsolatedVertex(node.getEdgesOut()));
-			
-//			System.out.println("\n-------------------------------------------------------------------\n");
-			
-			if(this.isFeasible(solution)){
-				if(lowerBound < this.bestSolution){
-					this.bestSolution = lowerBound;
-					this.edgeSolution = solution;
-					System.out.println("FEASIBLE SOLUTION: "+this.bestSolution);
+
+			if(node.getLevel() < this.edges.size()){
+				List<NodeCAPMST> childs = this.partition(node);
+
+				for(NodeCAPMST child:childs){
+					List<Edge> solution = ModifiedKruskalMST.run(graph, node.getEdgesIn(), node.getEdgesOut(), this.capacity);
+					child.setLowerBound(this.value(solution));
+
+					if(this.isFeasible(solution) && child.getLowerBound() < this.bestSolution){
+						this.edgeSolution = solution;
+						this.bestSolution = child.getLowerBound();
+						System.out.println("BEST PARTIAL SOLUTION: "+this.bestSolution);
+						continue;
+					}
+					if(child.getLowerBound() < this.bestSolution && !this.hasCycle(node.getEdgesIn()) && !this.hasIsolatedVertex(node.getEdgesOut())){
+						stack.push(child);
+					}
 				}
-			}else if(lowerBound < this.bestSolution && !this.hasCycle(node.getEdgesIn()) && !this.hasIsolatedVertex(node.getEdgesOut())){
-				if(node.getLevel() < this.edges.size()){
-					stack.push(this.partitionRight(node));
-					stack.push(this.partitionLeft(node));
-				}				
 			}
 		}
-		
+
 		System.out.println("Melhor Solução: "+this.bestSolution);
-		for(Edge edge:this.edgeSolution){
-			System.out.println(edge.origem+" - "+edge.destino);
-		}
-		System.out.println(this.isFeasible(edgeSolution));
-		NodeTree tree = this.createNodes(edgeSolution);
-		printTree(tree);
-		
+
 	}
-	
+
+	private List<NodeCAPMST> partition(NodeCAPMST node){
+		List<NodeCAPMST> nodes = new ArrayList<NodeCAPMST>();
+
+		nodes.add(this.partitionLeft(node));
+		nodes.add(this.partitionRight(node));
+
+		return nodes;
+	}
+
 	private void getEdgesFromGraph(){
 		for(int i = 0; i < this.graph.quantityNodes; i++){
 			for(int j = 0; j < this.graph.quantityNodes; j++){
@@ -93,7 +90,7 @@ public class DFSCAPMST {
 			}	
 		}
 	}
-	
+
 	private NodeCAPMST partitionLeft(NodeCAPMST node){
 		NodeCAPMST leftChild = new NodeCAPMST(node.getLevel()+1);
 		leftChild.setEdgesIn(node.getEdgesIn());
@@ -101,7 +98,7 @@ public class DFSCAPMST {
 		leftChild.addEdgeIn(this.edges.get(node.getLevel()));
 		return leftChild;
 	}
-	
+
 	private NodeCAPMST partitionRight(NodeCAPMST node){
 		NodeCAPMST rightChild = new NodeCAPMST(node.getLevel()+1);
 		rightChild.setEdgesIn(node.getEdgesIn());
@@ -109,10 +106,10 @@ public class DFSCAPMST {
 		rightChild.addEdgeOut(this.edges.get(node.getLevel()));
 		return rightChild;
 	}
-	
+
 	private boolean hasCycle(List<Edge> edgesIn){
 		DisjointSets set = new DisjointSets(this.graph.quantityNodes);
-		
+
 		for(Edge edge:edgesIn){
 			if(set.find(edge.origem) != set.find(edge.destino)){
 				set.union(set.find(edge.origem), set.find(edge.destino));
@@ -120,79 +117,79 @@ public class DFSCAPMST {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean hasIsolatedVertex(List<Edge> edgesOut){
-		
+
 		int[] counts = new int[this.graph.quantityNodes];
-		
+
 		for(Edge edge:edgesOut){
 			counts[edge.destino]++;
 			counts[edge.origem]++;
 		}
-		
+
 		for(int i:counts){
 			if(i == this.graph.quantityNodes-1){
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean hasIsolatedVertexAllEdges(List<Edge> edgesOut){
-		
+
 		int[] counts = new int[this.graph.quantityNodes];
-		
+
 		for(Edge edge:edgesOut){
 			counts[edge.destino]++;
 			counts[edge.origem]++;
 		}
-		
+
 		for(int i:counts){
 			if(i == 0){
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean isFeasible(List<Edge> edges){
-		
+
 		if(this.hasIsolatedVertexAllEdges(edges)) return false;
-		
+
 		NodeTree root = this.createNodes(edges);
 		this.size(root);
-		
+
 		if(root.getSize() != this.graph.quantityNodes) return false;
-		
+
 		for(NodeTree node:root.getChilds()){
 			if(node.getSize() > this.capacity){
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	private NodeTree createNodes(List<Edge> edges){
-		
+
 		List<NodeTree> nodes = new ArrayList<NodeTree>();
-		
+
 		for(int i = 0; i < this.graph.quantityNodes; i++){
 			nodes.add(i, new NodeTree(i));
 		}
-		
+
 		NodeTree root = nodes.get(this.graph.quantityNodes-1);
-		
+
 		List<NodeTree> actualNodes = new ArrayList<NodeTree>();
 		actualNodes.add(root);
 		boolean[] visited = new boolean[this.graph.quantityNodes];
 		visited[this.graph.quantityNodes-1] = true;
-		
+
 		while(!actualNodes.isEmpty()){
 			NodeTree actualNode = actualNodes.get(0);
 			actualNodes.remove(0);
@@ -210,10 +207,10 @@ public class DFSCAPMST {
 				}
 			}
 		}
-		
+
 		return root;
 	}
-	
+
 	private void printTree(NodeTree tree){
 		System.out.println("Raiz: "+tree.getLabel());
 		for(NodeTree tree2:tree.getChilds()){
@@ -221,7 +218,7 @@ public class DFSCAPMST {
 			this.printTree(tree2);
 		}
 	}
-	
+
 	private int size(NodeTree node){
 		if(node.getChilds().size() == 0){
 			node.setSize(1);
@@ -235,7 +232,7 @@ public class DFSCAPMST {
 			return node.getSize();
 		}
 	}
-	
+
 	private int value(List<Edge> edges){
 		int sum = 0;
 		for(Edge edge:edges){
@@ -259,5 +256,13 @@ public class DFSCAPMST {
 	public void setEdgeSolution(List<Edge> edgeSolution) {
 		this.edgeSolution = edgeSolution;
 	}
-	
+
+	public int getInitialLowerBound() {
+		return initialLowerBound;
+	}
+
+	public void setInitialLowerBound(int initialLowerBound) {
+		this.initialLowerBound = initialLowerBound;
+	}
+
 }
