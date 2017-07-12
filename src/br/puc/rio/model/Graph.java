@@ -6,6 +6,7 @@ public class Graph {
 	
 	public int quantityNodes = 0;
 	public Integer matrixAdj[][];
+	public String name;
 	
 	
 	
