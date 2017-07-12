@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Stack;
 
 import br.puc.rio.inf.paa.capmst.kruskal.KruskalMST;
+import br.puc.rio.inf.paa.capmst.kruskal.ModifiedKruskalMST;
+import br.puc.rio.inf.paa.capmst.relax.GreedyCMST;
 import br.puc.rio.inf.paa.utils.DisjointSets;
 import br.puc.rio.model.Edge;
 import br.puc.rio.model.Graph;
@@ -18,6 +20,7 @@ public class DFSCAPMST {
 	private int capacity;
 	private int bestSolution;
 	private List<Edge> edgeSolution;
+	private int initialLowerBound;
 	
 	public DFSCAPMST(Graph graph, int capacity){
 		System.out.println("QUANTIDADE: "+graph.quantityNodes);
@@ -31,32 +34,22 @@ public class DFSCAPMST {
 	}
 	
 	public void search(){
+		Stack<NodeCAPMST> stack = new Stack<NodeCAPMST>();
+		
+		this.bestSolution = GreedyCMST.buildCMST(this.graph, this.graph.quantityNodes-1, this.capacity);
+		System.out.println(bestSolution);
 		
 		this.root = new NodeCAPMST(0);
 		
-		Stack<NodeCAPMST> stack = new Stack<NodeCAPMST>();
+		int lowerBound = this.value(ModifiedKruskalMST.run(graph, root.getEdgesIn(), root.getEdgesOut(), this.capacity));
+		
 		stack.push(root);
 		
 		while(!stack.isEmpty()){
 			NodeCAPMST node = stack.pop();
 			
-//			System.out.println("Edges IN: ");
-//			for(Edge edge:node.getEdgesIn()){
-//				System.out.println("Edge IN: "+edge.origem+" -> "+edge.destino);
-//			}
-//			System.out.println("Edges OUT: ");
-//			for(Edge edge:node.getEdgesOut()){
-//				System.out.println("Edge OUT: "+edge.origem+" -> "+edge.destino);
-//			}
-			
-			List<Edge> solution = KruskalMST.run(graph, node.getEdgesIn(), node.getEdgesOut());
-			int lowerBound = this.value(solution);
-			
-//			System.out.println("lowerBound: "+lowerBound);
-//			System.out.println("Ciclo: "+this.hasCycle(node.getEdgesIn()));
-//			System.out.println("Isolado: "+this.hasIsolatedVertex(node.getEdgesOut()));
-			
-//			System.out.println("\n-------------------------------------------------------------------\n");
+			List<Edge> solution = ModifiedKruskalMST.run(graph, node.getEdgesIn(), node.getEdgesOut(), this.capacity);
+			lowerBound = this.value(solution);
 			
 			if(this.isFeasible(solution)){
 				if(lowerBound < this.bestSolution){
@@ -80,6 +73,15 @@ public class DFSCAPMST {
 		NodeTree tree = this.createNodes(edgeSolution);
 		printTree(tree);
 		
+	}
+	
+	private List<NodeCAPMST> partition(NodeCAPMST node){
+		List<NodeCAPMST> nodes = new ArrayList<NodeCAPMST>();
+		
+		nodes.add(this.partitionLeft(node));
+		nodes.add(this.partitionRight(node));
+		
+		return nodes;
 	}
 	
 	private void getEdgesFromGraph(){
@@ -256,6 +258,14 @@ public class DFSCAPMST {
 
 	public void setEdgeSolution(List<Edge> edgeSolution) {
 		this.edgeSolution = edgeSolution;
+	}
+
+	public int getInitialLowerBound() {
+		return initialLowerBound;
+	}
+
+	public void setInitialLowerBound(int initialLowerBound) {
+		this.initialLowerBound = initialLowerBound;
 	}
 	
 }
