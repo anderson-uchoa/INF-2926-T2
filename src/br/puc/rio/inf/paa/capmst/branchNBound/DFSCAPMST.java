@@ -27,7 +27,7 @@ public class DFSCAPMST {
 		this.edges = new ArrayList<Edge>();
 		this.getEdgesFromGraph();
 		Collections.sort(this.edges);
-		this.search();
+		
 	}
 	
 	public void search(){
@@ -39,9 +39,10 @@ public class DFSCAPMST {
 		stack.push(root);
 		
 		while(!stack.isEmpty()){
+		
 			NodeCAPMST node = stack.pop();
 			
-//			System.out.println("Edges IN: ");
+		//System.out.println("Edges IN: ");
 //			for(Edge edge:node.getEdgesIn()){
 //				System.out.println("Edge IN: "+edge.origem+" -> "+edge.destino);
 //			}
