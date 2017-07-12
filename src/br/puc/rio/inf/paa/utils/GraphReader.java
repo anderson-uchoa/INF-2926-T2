@@ -22,6 +22,7 @@ public class GraphReader {
 		for (String fileName : fileNames) {
 			
 			Graph instance = createInstance(fileName);
+			instance.name = getNameInstance(fileName);
 			graphInstances.add(instance);
 		}
 
@@ -86,6 +87,14 @@ public class GraphReader {
 
 		return fileNames;
 
+	}
+	
+	public String getNameInstance(String fileName) {
+
+		int indexLastSeparator = fileName.lastIndexOf("\\");
+		int sizeName = fileName.length();
+
+		return fileName.substring(indexLastSeparator + 1, sizeName);
 	}
 
 
