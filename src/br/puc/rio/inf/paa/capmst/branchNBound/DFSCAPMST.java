@@ -2,11 +2,15 @@ package br.puc.rio.inf.paa.capmst.branchNBound;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import br.puc.rio.inf.paa.capmst.kruskal.KruskalMST;
 import br.puc.rio.inf.paa.capmst.kruskal.ModifiedKruskalMST;
+import br.puc.rio.inf.paa.capmst.kruskal.SmartModifiedKruskalMST;
 import br.puc.rio.inf.paa.capmst.relax.GreedyCMST;
 import br.puc.rio.inf.paa.utils.DisjointSets;
 import br.puc.rio.model.Edge;
@@ -41,8 +45,8 @@ public class DFSCAPMST {
 
 		this.root = new NodeCAPMST(0);
 
-		this.root.setLowerBound(this.value(ModifiedKruskalMST.run(graph, root.getEdgesIn(), root.getEdgesOut(), this.capacity)));
-
+		this.root.setLowerBound(this.value(KruskalMST.run(graph, root.getEdgesIn(), root.getEdgesOut())));
+		System.out.println("Lower bound inicial: "+this.root.getLowerBound());
 		stack.push(root);
 
 		while(!stack.isEmpty()){
@@ -52,16 +56,20 @@ public class DFSCAPMST {
 				List<NodeCAPMST> childs = this.partition(node);
 
 				for(NodeCAPMST child:childs){
-					List<Edge> solution = ModifiedKruskalMST.run(graph, node.getEdgesIn(), node.getEdgesOut(), this.capacity);
+					List<Edge> solution = KruskalMST.run(graph, node.getEdgesIn(), node.getEdgesOut());
 					child.setLowerBound(this.value(solution));
-
+//					System.out.println("Lower Bound: "+child.getLowerBound());
 					if(this.isFeasible(solution) && child.getLowerBound() < this.bestSolution){
 						this.edgeSolution = solution;
 						this.bestSolution = child.getLowerBound();
 						System.out.println("BEST PARTIAL SOLUTION: "+this.bestSolution);
+						System.out.println("LOWER BOUND: "+this.minLowerBound(stack));
 						continue;
+					}else if(this.isFeasible(solution)){
+//						System.out.println("PARTIAL SOLUTION: "+child.getLowerBound());
 					}
-					if(child.getLowerBound() < this.bestSolution && !this.hasCycle(node.getEdgesIn()) && !this.hasIsolatedVertex(node.getEdgesOut())){
+					if(child.getLowerBound() < this.bestSolution && !this.hasCycle(node.getEdgesIn()) && !this.hasIsolatedVertex(node.getEdgesOut())
+							&& this.checkFeasibleCapacity(child.getEdgesIn(), this.graph.quantityNodes, this.capacity)){
 						stack.push(child);
 					}
 				}
@@ -70,6 +78,23 @@ public class DFSCAPMST {
 
 		System.out.println("Melhor Solução: "+this.bestSolution);
 
+	}
+	
+	private int minLowerBound(Stack stack){
+		
+		Iterator<NodeCAPMST> iterator = stack.iterator();
+		
+		int smaller = Integer.MAX_VALUE;
+		
+		while(iterator.hasNext()){
+			int value = iterator.next().getLowerBound();
+//			System.out.println("Pilha: "+value);
+			if(value < smaller){
+				smaller = value; 
+			}
+		}
+		
+		return smaller;
 	}
 
 	private List<NodeCAPMST> partition(NodeCAPMST node){
@@ -263,6 +288,118 @@ public class DFSCAPMST {
 
 	public void setInitialLowerBound(int initialLowerBound) {
 		this.initialLowerBound = initialLowerBound;
+	}
+	
+	public boolean checkFeasibleCapacity(List<Edge> edges, int qtyVertices, int capacity){
+		List<Set<Integer>> setsList = new ArrayList<Set<Integer>>();
+
+		for(Edge edge:edges){
+			this.addVerticeToSet(setsList, edge, qtyVertices);
+		}
+				
+		for(Set<Integer> set: setsList){
+			if(this.containsSubRoot(edges, set, qtyVertices)){
+				if(set.size() > capacity){
+					return false;
+				}
+			}else{
+				if(set.size()+1 > capacity){
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	public void addVerticeToSet(List<Set<Integer>> setsList, Edge edge, int qtyVertices){
+		
+		int index = -1;
+		
+		if(this.contains(setsList, edge.origem) && this.contains(setsList, edge.destino)){
+			int index1 = this.getIndexSet(setsList, edge.origem);
+			int index2 = this.getIndexSet(setsList, edge.destino);
+			Set<Integer> setAux = setsList.get(index2);
+			setsList.get(index1).addAll(setAux);
+			setsList.remove(index2);
+		}else if(this.contains(setsList, edge.origem)){
+			index = this.getIndexSet(setsList, edge.origem);
+			if(edge.origem != qtyVertices-1){
+				setsList.get(index).add(new Integer(edge.origem));
+			}
+			if(edge.destino != qtyVertices-1){
+				setsList.get(index).add(new Integer(edge.destino));
+			}
+		}else if(this.contains(setsList, edge.destino)){
+			index = this.getIndexSet(setsList, edge.destino);
+			if(edge.origem != qtyVertices-1){
+				setsList.get(index).add(new Integer(edge.origem));
+			}
+			if(edge.destino != qtyVertices-1){
+				setsList.get(index).add(new Integer(edge.destino));
+			}
+		}else if(!this.contains(setsList, edge.origem) && !this.contains(setsList, edge.destino)){
+			Set<Integer> set = new HashSet<Integer>();
+			if(edge.origem != qtyVertices-1){
+				set.add(new Integer(edge.origem));
+			}
+			if(edge.destino != qtyVertices-1){
+				set.add(new Integer(edge.destino));
+			}
+			
+			setsList.add(setsList.size(), set);
+		}
+
+	}
+
+	public boolean contains(List<Set<Integer>> setsList, int vertex){
+		boolean contains = false;
+		for(Set<Integer> set:setsList){
+			if(set.contains(new Integer(vertex))){
+				contains = true;
+				break;
+			}
+		}
+		return contains;
+	}
+	
+	private int getIndexSet(List<Set<Integer>> setsList, int vertex){
+		for(int i = 0; i < setsList.size(); i++){
+			for(Integer integer:setsList.get(i)){
+				if(integer.equals(vertex)){
+					return i;
+				}
+			}
+			
+		}
+		return -1;
+	}
+	
+	public void printSets(List<Set<Integer>> setsList, List<Edge> edges, int qtyVertices){
+		String out = "";
+		for(Set<Integer> set:setsList){
+			out = "";
+			for(Integer integer:set){
+				out+=integer+", ";
+			}
+			out+=this.containsSubRoot(edges, set, qtyVertices);
+			System.out.println(out);
+		}
+		
+	}
+	
+	public boolean containsSubRoot(List<Edge> edges, Set<Integer> set, int qtyVertices){
+		
+		for(Integer integer:set){
+			for(Edge edge:edges){
+				if((edge.origem == qtyVertices-1 && integer.equals(edge.destino)) ||
+						(edge.destino == qtyVertices-1 && integer.equals(edge.origem))){
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 
 }

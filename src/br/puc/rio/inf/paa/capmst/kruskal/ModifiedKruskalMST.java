@@ -31,7 +31,7 @@ public class ModifiedKruskalMST {
 		
 		if(slots > 0){
 			List<int[]> indexes = ModifiedKruskalMST.getAllCombinations(edgesRootCandidates.size(), Math.min(slots, edgesRootCandidates.size()));
-
+//			System.out.println("Chora: "+indexes.size());
 			for(int[] arr:indexes){
 				List<Edge> edgesRootAdd = ModifiedKruskalMST.getElementsByIndexes(edgesRootCandidates, arr);
 				edgesRootAdd.addAll(edgesIn);
@@ -167,6 +167,7 @@ public class ModifiedKruskalMST {
 					s[i] = s[i - 1] + 1; 
 				}
 				subsets.add(getSubset(indexes, s));
+//				System.out.println("Chora: "+subsets.size());
 			}
 		}
 
