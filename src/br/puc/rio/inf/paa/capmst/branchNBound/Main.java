@@ -41,7 +41,7 @@ public class Main {
 		
 		for (Graph graph : graphs) {
 			
-			if (graph.quantityNodes <= 17){
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																								
 				
 				DFSCAPMST dfscapmst = new DFSCAPMST(graph, 5);
 				
@@ -67,7 +67,7 @@ public class Main {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}
+			
 		}
 		
 		writer.close();
