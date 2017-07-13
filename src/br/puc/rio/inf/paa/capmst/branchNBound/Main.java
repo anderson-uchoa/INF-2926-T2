@@ -12,14 +12,13 @@ import java.nio.charset.Charset;
 
 public class Main {
 
-	//public static double timeOut = 5000;
+	// public static double timeOut = 5000;
 
-	public static double timeOut = TimeUnit.HOURS.toMillis(1);
-
+	public static double timeOut = TimeUnit.MINUTES.toMillis(20);
 
 	public static void main(String[] args) {
-				
-		String nameCSV = "nameCMst.csv";
+
+		String nameCSV = "CAPMST10.csv";
 
 		CsvWriter writer = new CsvWriter(nameCSV, ',', Charset.forName("ISO-8859-1"));
 
@@ -32,46 +31,44 @@ public class Main {
 			writer.write("CPU");
 			writer.write("Lower_limit_root");
 			writer.write("Lower_limit_execution");
+			writer.write("Edges");
 			writer.endRecord();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		
+
 		for (Graph graph : graphs) {
-			
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																								
-				
-				DFSCAPMST dfscapmst = new DFSCAPMST(graph, 5);
-				
+
+			if (graph.quantityNodes > 17) {
+
+				DFSCAPMST dfscapmst = new DFSCAPMST(graph, 10);
+
 				dfscapmst.search();
-				
-			
-		
+
+				String edgesSet = dfscapmst.getEdges();
+
 				try {
-					
+
 					double hours = TimeUnit.MILLISECONDS.toMinutes((long) dfscapmst.timeResult);
 					writer.write(graph.name);
 					writer.write(String.valueOf(dfscapmst.getBestSolution()));
 					writer.write(String.valueOf(dfscapmst.isOptimal));
 					writer.write(String.valueOf(hours));
 					writer.write(String.valueOf(dfscapmst.getInitialLowerBound()));
-			//		writer.write(); LBDAEXECUCAO
+					writer.write(String.valueOf(dfscapmst.getInitialLowerBound()));
+
+					writer.write(edgesSet);
 
 					writer.endRecord();
 
-				
-					
-					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			
-		}
-		
-		writer.close();
 
-				
 			}
 		}
+		writer.close();
+
+	}
+}

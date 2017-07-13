@@ -15,20 +15,14 @@ public class GreedyCMST {
 	int n;
 	int cont = 0;
 	Set<Integer> treeSet;
-	int sumEdgesCMST;
+	public int sumEdgesCMST;
 	
 	public GreedyCMST(Graph graph){
 		this.graph = graph;
 		this.n = graph.quantityNodes;
 		this.treeSet =  new TreeSet<Integer>();
 	}
-	
-	public static int buildCMST(Graph graph,int root, int capacity){
-		GreedyCMST greedyCMST = new GreedyCMST(graph);
-		greedyCMST.buildCMST(root, capacity);
-		return greedyCMST.sumEdgesCMST;
-	}
-	
+
 	public Integer[][] buildCMST(int root, int capacity){
 		
 		   
@@ -181,7 +175,7 @@ public class GreedyCMST {
 				
 				
 				
-				System.out.println("Sum Weights CMST : "+ buildCMST(graphs.get(i),1, 3));
+			//	System.out.println("Sum Weights CMST : "+ buildCMST(graphs.get(i),1, 3));
 				
 				
 		}
